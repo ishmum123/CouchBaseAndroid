@@ -5,6 +5,7 @@
     tools:context="com.example.ishmum.couchbaseapp2.DataManagementFragment">
 
     <TextView
+        android:id="@+id/data_management_fragment_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DataManagementFragment extends Fragment {
 
@@ -12,6 +13,7 @@ public class DataManagementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_data_management, container, false);
+        ((TextView) v.findViewById(R.id.data_management_fragment_text_view)).setText("Hello World!");
         return v;
     }
 
