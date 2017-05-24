@@ -20,6 +20,10 @@ class Device implements DataModel {
         userIdList = new ArrayList<>();
     }
 
+    public void removeUser(String userId) {
+        userIdList.remove(userId);
+    }
+
     public List<String> getUserIdList() {
         return userIdList;
     }
@@ -109,6 +113,30 @@ class User implements DataModel {
         return email;
     }
 
+    public void addHome(String homeId) {
+        homeIdList.add(homeId);
+    }
+
+    public void addDevice(String deviceId) {
+        deviceIdList.add(deviceId);
+    }
+
+    public void addRoom(String roomId) {
+        roomIdList.add(roomId);
+    }
+
+    public void removeRoom(String roomId) {
+        roomIdList.remove(roomId);
+    }
+
+    public void removeHome(String homeId) {
+        homeIdList.remove(homeId);
+    }
+
+    public void removeDevice(String deviceId) {
+        deviceIdList.remove(deviceId);
+    }
+
     public String getRole() {
         return role;
     }
@@ -144,6 +172,20 @@ class User implements DataModel {
     public void setExpireAt(String expireAt) {
         this.expireAt = expireAt;
     }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return "{" +
+                "'name':'" + name + "'," +
+                "'email':'" + email + "'," +
+                "'role':'" + role + "'," +
+                "'expireAt':'" + expireAt + "'," +
+                "'homeIdList':'" + gson.toJson(homeIdList) + "'," +
+                "'roomIdList':'" + gson.toJson(roomIdList) + "'," +
+                "'deviceIdList':'" + gson.toJson(deviceIdList) + "'" +
+                "}";
+    }
 }
 
 class Home implements DataModel {
@@ -161,6 +203,19 @@ class Home implements DataModel {
     public String getPassPhrase() {
         return passPhrase;
     }
+
+    public void removeUser(String userId) {
+        userIdList.remove(userId);
+    }
+
+    public void removeRoom(String roomId) {
+        roomIdList.remove(roomId);
+    }
+
+    public void removeDevice(String deviceId) {
+        deviceIdList.remove(deviceId);
+    }
+
 
     public List<String> getUserIdList() {
         return userIdList;
@@ -185,15 +240,25 @@ class Home implements DataModel {
     public void addDevice(String deviceId) {
         deviceIdList.add(deviceId);
     }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return "{" +
+                "'passPhrase':'" + passPhrase + "'," +
+                "'userIdList':'" + gson.toJson(userIdList) + "'," +
+                "'roomIdList':'" + gson.toJson(roomIdList) + "'," +
+                "'deviceIdList':'" + gson.toJson(deviceIdList) + "'" +
+                "}";
+    }
 }
 
 class Room implements DataModel {
 
-    private final String roomId, homeId;
+    private final String homeId;
     private final List<String> userIdList, deviceIdList;
 
-    Room(String roomId, String homeId) {
-        this.roomId = roomId;
+    Room(String homeId) {
         this.homeId = homeId;
         userIdList = new ArrayList<>();
         deviceIdList = new ArrayList<>();
@@ -203,16 +268,20 @@ class Room implements DataModel {
         userIdList.add(userId);
     }
 
+    public void removeUser(String userId) {
+        userIdList.remove(userId);
+    }
+
     public void addDevice(String deviceId) {
         deviceIdList.add(deviceId);
     }
 
-    public List<String> getDeviceIdList() {
-        return deviceIdList;
+    public void removeDevice(String deviceId) {
+        deviceIdList.remove(deviceId);
     }
 
-    public String getRoomId() {
-        return roomId;
+    public List<String> getDeviceIdList() {
+        return deviceIdList;
     }
 
     public String getHomeId() {
@@ -225,6 +294,11 @@ class Room implements DataModel {
 
     @Override
     public String toString() {
-        return super.toString();
+        Gson gson = new Gson();
+        return "{" +
+                "'homeId':'" + homeId + "'," +
+                "'userIdList':'" + gson.toJson(userIdList) + "'," +
+                "'deviceIdList':'" + gson.toJson(deviceIdList) + "'" +
+                "}";
     }
 }
