@@ -183,13 +183,26 @@ public class DeviceTest {
                 usage = generateString(),
                 usageTimeStamp = generateString(),
                 presetData = generateString(),
-                userId = generateString();
+                userId1 = generateString(),
+                userId2 = generateString();
 
-        final String deviceString1 = "{'deviceHash' : '" + deviceHash + "','roomId' : ''," +
-                "'homeId' : '','configData' : '','usage' : '','usageTimeStamp' : ''," +
-                "'presetData' : '','userIdList' : ''}",
+        final String deviceString1 = "{'deviceHash' : '" + deviceHash + "','roomId' : 'null'," +
+                "'homeId' : 'null','configData' : 'null','usage' : 'null','usageTimeStamp' : 'null'," +
+                "'presetData' : 'null','userIdList' : []}",
 
                 deviceString2 =
+                                "{" +
+                                "'deviceHash' : '" + deviceHash + "'," +
+                                "'roomId' : '" + roomId + "'," +
+                                "'homeId' : '" + homeId + "'," +
+                                "'configData' : '" + configData + "'," +
+                                "'usage' : '" + usage + "'," +
+                                "'usageTimeStamp' : '" + usageTimeStamp + "'," +
+                                "'presetData' : '" + presetData + "'," +
+                                "'userIdList' : [\"" + userId1 + "\",\"" + userId2 + "\"]" +
+                                "}",
+
+                deviceString3 =
                         "{" +
                                 "'deviceHash' : '" + deviceHash + "'," +
                                 "'roomId' : '" + roomId + "'," +
@@ -198,10 +211,10 @@ public class DeviceTest {
                                 "'usage' : '" + usage + "'," +
                                 "'usageTimeStamp' : '" + usageTimeStamp + "'," +
                                 "'presetData' : '" + presetData + "'," +
-                                "'userIdList' : ['" + userId + "']" +
+                                "'userIdList' : [\"" + userId1 + "\"]" +
                                 "}";
 
-        assertTrue(deviceString1 == device.toString());
+        assertTrue(deviceString1.equals(device.toString()));
 
         device.setRoomId(roomId);
         device.setHomeId(homeId);
@@ -209,9 +222,14 @@ public class DeviceTest {
         device.setUsage(usage);
         device.setUsageTimeStamp(usageTimeStamp);
         device.setPresetData(presetData);
-        device.addUser(userId);
+        device.addUser(userId1);
+        device.addUser(userId2);
 
-        assertTrue(deviceString2 == device.toString());
+        assertTrue(deviceString2.equals(device.toString()));
+
+        device.removeUser(userId2);
+
+        assertTrue(deviceString3.equals(device.toString()));
     }
 
 }

@@ -94,7 +94,7 @@ class Device implements DataModel {
                 + "'usage' : '" + usage + "',"
                 + "'usageTimeStamp' : '" + usageTimeStamp + "',"
                 + "'presetData' : '" + presetData + "',"
-                + "'userIdList' : '" + new Gson().toJson(userIdList) + "'"
+                + "'userIdList' : " + new Gson().toJson(userIdList)
                 + "}";
     }
 }
