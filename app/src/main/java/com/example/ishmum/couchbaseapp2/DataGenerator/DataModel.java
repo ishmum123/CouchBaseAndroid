@@ -2,14 +2,36 @@ package com.example.ishmum.couchbaseapp2.DataGenerator;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-interface DataModel {
-    String toString();
+abstract class DataModel {
+
+    public abstract String toString();
+
+    JSONObject getJSON() {
+        return DataModelEssentials.getJSONOBject(toString());
+    }
 }
 
-class Device implements DataModel {
+class DataModelEssentials {
+
+    private static final Gson gson = new Gson();
+
+    static String getJsonArray(List<String> stringList) {
+        return gson.toJson(stringList);
+    }
+
+    static JSONObject getJSONOBject(String s) {
+        try { return new JSONObject(s); }
+        catch (JSONException e) { return new JSONObject(); }
+    }
+}
+
+class Device extends DataModel {
 
     private final String deviceHash;
     private String roomId, homeId, configData, usage, usageTimeStamp, presetData;
@@ -94,12 +116,12 @@ class Device implements DataModel {
                 + "'usage' : '" + usage + "',"
                 + "'usageTimeStamp' : '" + usageTimeStamp + "',"
                 + "'presetData' : '" + presetData + "',"
-                + "'userIdList' : " + new Gson().toJson(userIdList)
+                + "'userIdList' : " + DataModelEssentials.getJsonArray(userIdList)
                 + "}";
     }
 }
 
-class User implements DataModel {
+class User extends DataModel {
 
     private final String name, email;
     private String role, expireAt;
@@ -175,20 +197,19 @@ class User implements DataModel {
 
     @Override
     public String toString() {
-        Gson gson = new Gson();
         return "{" +
                 "'name':'" + name + "'," +
                 "'email':'" + email + "'," +
                 "'role':'" + role + "'," +
                 "'expireAt':'" + expireAt + "'," +
-                "'homeIdList':'" + gson.toJson(homeIdList) + "'," +
-                "'roomIdList':'" + gson.toJson(roomIdList) + "'," +
-                "'deviceIdList':'" + gson.toJson(deviceIdList) + "'" +
+                "'homeIdList':'" + DataModelEssentials.getJsonArray(homeIdList) + "'," +
+                "'roomIdList':'" + DataModelEssentials.getJsonArray(roomIdList) + "'," +
+                "'deviceIdList':'" + DataModelEssentials.getJsonArray(deviceIdList) + "'" +
                 "}";
     }
 }
 
-class Home implements DataModel {
+class Home extends DataModel {
 
     private final String passPhrase;
     private final List<String> userIdList, roomIdList, deviceIdList;
@@ -246,14 +267,14 @@ class Home implements DataModel {
         Gson gson = new Gson();
         return "{" +
                 "'passPhrase':'" + passPhrase + "'," +
-                "'userIdList':'" + gson.toJson(userIdList) + "'," +
-                "'roomIdList':'" + gson.toJson(roomIdList) + "'," +
-                "'deviceIdList':'" + gson.toJson(deviceIdList) + "'" +
+                "'userIdList':'" + DataModelEssentials.getJsonArray(userIdList) + "'," +
+                "'roomIdList':'" + DataModelEssentials.getJsonArray(roomIdList) + "'," +
+                "'deviceIdList':'" + DataModelEssentials.getJsonArray(deviceIdList) + "'" +
                 "}";
     }
 }
 
-class Room implements DataModel {
+class Room extends DataModel {
 
     private final String homeId;
     private final List<String> userIdList, deviceIdList;
@@ -297,8 +318,8 @@ class Room implements DataModel {
         Gson gson = new Gson();
         return "{" +
                 "'homeId':'" + homeId + "'," +
-                "'userIdList':'" + gson.toJson(userIdList) + "'," +
-                "'deviceIdList':'" + gson.toJson(deviceIdList) + "'" +
+                "'userIdList':'" + DataModelEssentials.getJsonArray(userIdList) + "'," +
+                "'deviceIdList':'" + DataModelEssentials.getJsonArray(deviceIdList) + "'" +
                 "}";
     }
 }

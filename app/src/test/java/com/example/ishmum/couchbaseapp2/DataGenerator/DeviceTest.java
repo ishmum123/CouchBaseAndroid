@@ -2,6 +2,7 @@ package com.example.ishmum.couchbaseapp2.DataGenerator;
 
 import com.example.ishmum.couchbaseapp2.RandomGenerator;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -184,11 +185,11 @@ public class DeviceTest {
                 usageTimeStamp = generateString(),
                 presetData = generateString(),
                 userId1 = generateString(),
-                userId2 = generateString();
+                userId2 = generateString(),
 
-        final String deviceString1 = "{'deviceHash' : '" + deviceHash + "','roomId' : 'null'," +
-                "'homeId' : 'null','configData' : 'null','usage' : 'null','usageTimeStamp' : 'null'," +
-                "'presetData' : 'null','userIdList' : []}",
+                deviceString1 = "{'deviceHash' : '" + deviceHash + "','roomId' : 'null'," +
+                                "'homeId' : 'null','configData' : 'null','usage' : 'null','usageTimeStamp' : 'null'," +
+                                "'presetData' : 'null','userIdList' : []}",
 
                 deviceString2 =
                                 "{" +
@@ -203,7 +204,7 @@ public class DeviceTest {
                                 "}",
 
                 deviceString3 =
-                        "{" +
+                                "{" +
                                 "'deviceHash' : '" + deviceHash + "'," +
                                 "'roomId' : '" + roomId + "'," +
                                 "'homeId' : '" + homeId + "'," +
@@ -232,4 +233,60 @@ public class DeviceTest {
         assertTrue(deviceString3.equals(device.toString()));
     }
 
+    @Test
+    public void getJSON() throws Exception {
+        final String roomId = generateString(),
+                homeId = generateString(),
+                configData = generateString(),
+                usage = generateString(),
+                usageTimeStamp = generateString(),
+                presetData = generateString(),
+                userId1 = generateString(),
+                userId2 = generateString(),
+                nullString = "null";
+
+        assertTrue(getJSONDataMatch("deviceHash", deviceHash));
+        assertTrue(getJSONDataMatch("roomId", nullString));
+        assertTrue(getJSONDataMatch("homeId", nullString));
+        assertTrue(getJSONDataMatch("configData", nullString));
+        assertTrue(getJSONDataMatch("usage", nullString));
+        assertTrue(getJSONDataMatch("usageTimeStamp", nullString));
+        assertTrue(getJSONDataMatch("presetData", nullString));
+        assertTrue(device.getJSON().getJSONArray("userIdList").length() == 0);
+
+        device.setRoomId(roomId);
+        device.setHomeId(homeId);
+        device.setConfigData(configData);
+        device.setUsage(usage);
+        device.setUsageTimeStamp(usageTimeStamp);
+        device.setPresetData(presetData);
+        device.addUser(userId1);
+        device.addUser(userId2);
+
+        assertTrue(getJSONDataMatch("deviceHash", deviceHash));
+        assertTrue(getJSONDataMatch("roomId", roomId));
+        assertTrue(getJSONDataMatch("homeId", homeId));
+        assertTrue(getJSONDataMatch("configData", configData));
+        assertTrue(getJSONDataMatch("usage", usage));
+        assertTrue(getJSONDataMatch("usageTimeStamp", usageTimeStamp));
+        assertTrue(getJSONDataMatch("presetData", presetData));
+        assertTrue(device.getJSON().getJSONArray("userIdList").length() == 2);
+        assertTrue(device.getJSON().getJSONArray("userIdList").get(0).equals(userId1));
+        assertTrue(device.getJSON().getJSONArray("userIdList").get(1).equals(userId2));
+
+        device.removeUser(userId2);
+
+        assertTrue(device.getJSON().getJSONArray("userIdList").length() == 1);
+        assertTrue(device.getJSON().getJSONArray("userIdList").get(0).equals(userId1));
+
+        boolean exceptionThrown = false;
+        try { device.getJSON().getJSONArray("userIdList").get(1); }
+        catch (JSONException e) { exceptionThrown = true; }
+
+        assertTrue(exceptionThrown);
+    }
+
+    private boolean getJSONDataMatch(String key, String s) throws JSONException {
+        return device.getJSON().get(key).equals(s);
+    }
 }
