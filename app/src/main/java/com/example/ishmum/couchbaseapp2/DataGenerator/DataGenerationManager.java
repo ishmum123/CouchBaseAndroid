@@ -1,5 +1,8 @@
 package com.example.ishmum.couchbaseapp2.DataGenerator;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Document;
 import com.example.ishmum.couchbaseapp2.RandomGenerator;
 
 import java.util.HashMap;
@@ -8,9 +11,11 @@ import java.util.Map;
 public class DataGenerationManager {
 
     final RandomGenerator randomGenerator;
+    private final Database database;
 
-    public DataGenerationManager() {
+    public DataGenerationManager(Database database) {
         randomGenerator = new RandomGenerator();
+        this.database = database;
     }
 
     void addDeviceToRoom(Device device, String deviceId, Room room, String roomId) {
@@ -23,28 +28,35 @@ public class DataGenerationManager {
         room.removeDevice(deviceId);
     }
 
-    Map<String, Device> createDevice() {
-        Map<String, Device> map = new HashMap<>();
-        map.put(generateString(), new Device(generateString()));
-        return map;
+    Document createDevice(String deviceId, String deviceHash) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(deviceId, new Device(deviceHash).getJSON());
+        return createDocument(deviceId, map);
     }
 
-    Map<String, Home> createHome() {
-        Map<String, Home> map = new HashMap<>();
-        map.put(generateString(), new Home(generateString()));
-        return map;
+    Document createHome(String homeId, String passPhrase) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(homeId, new Home(passPhrase).getJSON());
+        return createDocument(homeId, map);
     }
 
-    Map<String, User> createUser() {
-        Map<String, User> map = new HashMap<>();
-        map.put(generateString(), new User(generateString(), generateString()));
-        return map;
+    Document createUser(String userId, String name, String email) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(userId, new User(name, email).getJSON());
+        return createDocument(userId, map);
     }
 
-    Map<String, Room> createRoom(String homeId) {
-        Map<String, Room> map = new HashMap<>();
-        map.put(generateString(), new Room(homeId));
-        return map;
+    Document createRoom(String roomId, String homeId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(roomId, new Room(homeId).getJSON());
+        return createDocument(roomId, map);
+    }
+
+    private Document createDocument(String id, Map<String, Object> map) {
+        Document document = database.getDocument(id);
+        try { document.putProperties(map); }
+        catch (CouchbaseLiteException e) { e.printStackTrace(); }
+        return document;
     }
 
     void addUserToDevice(Device device, String deviceId, User user, String userId) {

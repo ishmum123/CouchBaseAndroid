@@ -10,6 +10,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 public class DeviceTest {
+
     private Device device;
     private RandomGenerator randomGenerator;
     private String deviceHash;
